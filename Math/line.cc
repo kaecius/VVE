@@ -22,13 +22,17 @@ Line & Line::operator=(const Line & line) {
 // Note: Check than A and B are not too close!
 
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
+	m_O = A;
+	m_d = B - A;
+	assert(m_d.length() > 10^-6);
+	m_d.normalize();
 }
 
 // @@ TODO: Give the point corresponding to parameter u
 
 Vector3 Line::at(float u) const {
 	Vector3 res;
-
+	res = m_O + u * m_d;
 	return res;
 }
 
@@ -38,7 +42,7 @@ Vector3 Line::at(float u) const {
 
 float Line::paramDistance(const Vector3 & P) const {
 	float res = 0.0f;
-
+	res = m_d.dot((P-m_O)) / m_d.dot(m_d);
 	return res;
 }
 
@@ -49,7 +53,8 @@ float Line::paramDistance(const Vector3 & P) const {
 
 float Line::distance(const Vector3 & P) const {
 	float res = 0.0f;
-
+	float u = paramDistance(P);
+	res = (P - (m_O + u*m_d)).length();
 	return res;
 }
 
