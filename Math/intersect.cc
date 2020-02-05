@@ -16,7 +16,18 @@
 //    IINTERSECT intersect
 
 int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
+	int result = IINTERSECT;
 
+	float signedDistance = pl->distance((*bs).getPosition()); // Distancia con signo, |d|<=r Interseca, |d|>r no interseca => + fuera, - dentro  
+	if(fabs(signedDistance) > bs->getRadius()){ // IREJECT
+		if(signedDistance < 0){
+			result = -IREJECT;
+		}else{
+			result = IREJECT;
+		}	
+	}
+
+	return result;
 }
 
 
@@ -26,7 +37,14 @@ int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
 //    IREJECT don't intersect
 
 int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
+	int result = IREJECT;
 
+	if( (bbb->m_min.x() <= bba->m_max.x() || bba->m_min.x() <= bbb->m_max.x())
+			&& (bbb->m_min.y() <= bba->m_max.y() || bba->m_min.y() <= bbb->m_max.y()) 
+			&& (bbb->m_min.z() <= bba->m_max.z() || bba->m_min.z() <= bbb->m_max.z()) ){
+		result = IINTERSECT;
+	}
+	return result;
 }
 
 // @@ TODO: test if a BBox and a plane intersect.
