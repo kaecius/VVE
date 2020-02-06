@@ -79,14 +79,14 @@ int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
 		diagP2[2] = theBBox->m_min.z();
 	}
 
-	float distanceMinPosSide = thePlane->m_n.dot(diagP1) - thePlane->m_d;
-	float distanceMaxPosSide = thePlane->m_n.dot(diagP2) - thePlane->m_d;
+	int diagP1Side = thePlane->whichSide(diagP1);
+	int diagP2Side = thePlane->whichSide(diagP2);
 	
-	if(distanceMinPosSide > Constants::distance_epsilon 
-		&& distanceMaxPosSide > Constants::distance_epsilon){
+	if(diagP1Side > Constants::distance_epsilon 
+		&& diagP2Side > Constants::distance_epsilon){
 		result = IREJECT;
-	}else if(distanceMinPosSide < Constants::distance_epsilon
-		&& distanceMaxPosSide < Constants::distance_epsilon){
+	}else if(diagP1Side < Constants::distance_epsilon
+		&& diagP2Side < Constants::distance_epsilon){
 		result = -IREJECT;
 	}
 
