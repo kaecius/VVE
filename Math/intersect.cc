@@ -18,7 +18,7 @@
 int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
 	int result = IINTERSECT;
 
-	float signedDistance = pl->distance((*bs).getPosition()); // Distancia con signo, |d|<=r Interseca, |d|>r no interseca => + fuera, - dentro  
+	float signedDistance = pl->distance(bs->getPosition()); // Distancia con signo, |d|<=r Interseca, |d|>r no interseca => + fuera, - dentro  
 	if(fabs(signedDistance) > bs->getRadius()){ // IREJECT
 		if(signedDistance < 0){
 			result = -IREJECT;
@@ -54,7 +54,43 @@ int  BBoxBBoxIntersect(const BBox *bba, const BBox *bbb ) {
 //    IINTERSECT intersect
 
 int  BBoxPlaneIntersect (const BBox *theBBox, Plane *thePlane) {
+	int result = IINTERSECT;
 
+	Vector3 diagP1, diagP2;
+	if(thePlane->m_n.x() >= Constants::distance_epsilon){
+		diagP1[0] = theBBox->m_min.x();
+		diagP2[0] = theBBox->m_max.x();
+	}else{
+		diagP1[0] = theBBox->m_max.x();
+		diagP2[0] = theBBox->m_min.x();
+	}
+	if(thePlane->m_n.y() >= Constants::distance_epsilon){
+		diagP1[1] = theBBox->m_min.y();
+		diagP2[1] = theBBox->m_max.y();
+	}else{
+		diagP1[1] = theBBox->m_max.y();
+		diagP2[1] = theBBox->m_min.y();
+	}
+	if(thePlane->m_n.z() >= Constants::distance_epsilon){
+		diagP1[2] = theBBox->m_min.z();
+		diagP2[2] = theBBox->m_max.z();
+	}else{
+		diagP1[2] = theBBox->m_max.z();
+		diagP2[2] = theBBox->m_min.z();
+	}
+
+	float distanceMinPosSide = thePlane->m_n.dot(diagP1) - thePlane->m_d;
+	float distanceMaxPosSide = thePlane->m_n.dot(diagP2) - thePlane->m_d;
+	
+	if(distanceMinPosSide > Constants::distance_epsilon 
+		&& distanceMaxPosSide > Constants::distance_epsilon){
+		result = IREJECT;
+	}else if(distanceMinPosSide < Constants::distance_epsilon
+		&& distanceMaxPosSide < Constants::distance_epsilon){
+		result = -IREJECT;
+	}
+
+	return result;
 }
 
 // Test if two BSpheres intersect.
