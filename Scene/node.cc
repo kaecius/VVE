@@ -268,8 +268,10 @@ void Node::addChild(Node *theChild) {
 	if (theChild == 0) return;
 	if (m_gObject) {
 		// node has a gObject, so print warning
+		printf("WARNING - Estas metiendo un hijo a un nodo hoja");
 	} else {
 		// node does not have gObject, so attach child
+		m_children.push_front(theChild);
 	}
 }
 
@@ -295,6 +297,15 @@ void Node::detach() {
 //    - placementWC of node and parents are up-to-date
 
 void Node::propagateBBRoot() {
+/*	updateBB();
+	if(not m_gObject){
+		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();
+    	it != end; ++it) {
+    		Node *theChild = *it;
+    		theChild->propagateBBRoot();
+		}
+	}
+*/	
 }
 
 // @@ TODO: auxiliary function
@@ -387,7 +398,22 @@ void Node::draw() {
 		BBoxGL::draw( m_containerWC );
 
 	/* =================== PUT YOUR CODE HERE ====================== */
-
+	//OJO.. Hay que tener en cuenta las transformaciones
+	if (m_gObject){
+		//Dibujar objeto seleccionado
+		m_gObject->draw();
+	}else{
+		//Recorrer los hijos
+		//Concatenar la transformacion del padre a la de los hijos (Add)
+		for(list<Node *>::iterator it = m_children.begin(), end= m_children.end();
+			it!=end;++it){
+			Node *theChild = *it;
+			theChild->m_gObject->applyTrfm(m_placement);
+			theChild->draw();
+		}
+	}
+	
+	
 
 	/* =================== END YOUR CODE HERE ====================== */
 
