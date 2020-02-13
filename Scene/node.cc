@@ -271,7 +271,8 @@ void Node::addChild(Node *theChild) {
 		printf("WARNING - Estas metiendo un hijo a un nodo hoja");
 	} else {
 		// node does not have gObject, so attach child
-		m_children.push_front(theChild);
+		theChild->m_parent = this;
+		m_children.push_back(theChild);
 	}
 }
 
@@ -398,21 +399,18 @@ void Node::draw() {
 		BBoxGL::draw( m_containerWC );
 
 	/* =================== PUT YOUR CODE HERE ====================== */
-	//OJO.. Hay que tener en cuenta las transformaciones
+	rs->push(RenderState::modelview);
+	rs->addTrfm(RenderState::modelview,m_placement);
 	if (m_gObject){
-		//Dibujar objeto seleccionado
 		m_gObject->draw();
 	}else{
-		//Recorrer los hijos
-		//Concatenar la transformacion del padre a la de los hijos (Add)
 		for(list<Node *>::iterator it = m_children.begin(), end= m_children.end();
 			it!=end;++it){
 			Node *theChild = *it;
-			theChild->m_gObject->applyTrfm(m_placement);
-			theChild->draw();
+			theChild->draw();				
 		}
 	}
-	
+	rs->pop(RenderState::modelview);
 	
 
 	/* =================== END YOUR CODE HERE ====================== */
