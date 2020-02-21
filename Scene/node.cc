@@ -271,8 +271,10 @@ void Node::addChild(Node *theChild) {
 		printf("WARNING - Estas metiendo un hijo a un nodo hoja");
 	} else {
 		// node does not have gObject, so attach child
+		
 		theChild->m_parent = this;
 		m_children.push_back(theChild);
+		updateGS();
 	}
 }
 
@@ -298,15 +300,10 @@ void Node::detach() {
 //    - placementWC of node and parents are up-to-date
 
 void Node::propagateBBRoot() {
-/*	updateBB();
-	if(not m_gObject){
-		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();
-    	it != end; ++it) {
-    		Node *theChild = *it;
-    		theChild->propagateBBRoot();
-		}
-	}
-*/	
+	updateBB();
+	if(m_parent != 0){
+		m_parent->propagateBBRoot();
+	}	
 }
 
 // @@ TODO: auxiliary function
@@ -335,6 +332,17 @@ void Node::propagateBBRoot() {
 //    See Recipe 1 in for knowing how to iterate through children.
 
 void Node::updateBB () {
+	m_containerWC->init();
+	if (m_gObject){
+		m_containerWC->clone(m_gObject->getContainer());
+		m_containerWC->transform(m_placementWC);
+	}else{
+		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();
+			it != end; ++it) {
+			Node *theChild = *it;
+			m_containerWC->include(theChild->m_containerWC);
+		}
+	}
 }
 
 // @@ TODO: Update WC (world coordinates matrix) of a node and
@@ -353,6 +361,20 @@ void Node::updateBB () {
 //    See Recipe 1 in for knowing how to iterate through children.
 
 void Node::updateWC() {
+	if (!m_parent){ 
+		m_placementWC->clone(m_placement);
+	}else{
+		m_placementWC->clone(m_parent->m_placementWC);
+		m_placementWC->add(m_placement);
+	}
+	if(!m_gObject){
+		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();
+			it != end; ++it) {
+			Node *theChild = *it;
+			theChild->updateWC();
+		}
+	}
+	updateBB();
 }
 
 // @@ TODO:
@@ -364,6 +386,11 @@ void Node::updateWC() {
 // - Propagate Bounding Box to root (propagateBBRoot), starting from the parent, if parent exists.
 
 void Node::updateGS() {
+	updateWC();
+	if (m_parent){
+		m_parent->propagateBBRoot();
+	}
+	
 }
 
 // @@ TODO:
@@ -399,10 +426,11 @@ void Node::draw() {
 		BBoxGL::draw( m_containerWC );
 
 	/* =================== PUT YOUR CODE HERE ====================== */
-	rs->push(RenderState::modelview);
-	rs->addTrfm(RenderState::modelview,m_placement);
-	if (m_gObject){
+	if(m_gObject){
+		rs->push(RenderState::modelview);
+		rs->addTrfm(RenderState::modelview,m_placementWC);
 		m_gObject->draw();
+		rs->pop(RenderState::modelview);
 	}else{
 		for(list<Node *>::iterator it = m_children.begin(), end= m_children.end();
 			it!=end;++it){
@@ -410,8 +438,8 @@ void Node::draw() {
 			theChild->draw();				
 		}
 	}
-	rs->pop(RenderState::modelview);
-	
+	//Mete en la model view las transformaciones en coordenadas del mundo, dibujate y sal -> si eres hoja
+	//Si eres intermedio nada.
 
 	/* =================== END YOUR CODE HERE ====================== */
 
