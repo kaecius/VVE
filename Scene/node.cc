@@ -465,6 +465,21 @@ void Node::setCulled(bool culled) {
 //          update m_isCulled accordingly.
 
 void Node::frustumCull(Camera *cam) {
+	int checkFrustum = cam->checkFrustum(m_containerWC,0);
+	if(checkFrustum == -1){ // Dentro del Frustrum 
+		m_isCulled = 0;
+	}else if(checkFrustum == 1){ //Fuera
+		m_isCulled = 1; // 
+	}else{ // Interseca, el nodo es visible y miro los hijos
+		m_isCulled = 0;
+		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();
+		it != end; ++it) {
+		Node *theChild = *it;
+		theChild->frustumCull(cam);
+	}
+	    
+
+	}
 }
 
 // @@ TODO: Check whether a BSphere (in world coordinates) intersects with a
