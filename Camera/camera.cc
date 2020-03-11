@@ -320,8 +320,7 @@ void  Camera::arcLeftRight(float angle) {
 
 int Camera::checkFrustum(const BBox *theBBox,
 						 unsigned int *planesBitM) {
-	int dentro = 0;
-	for(int i = 0; i < 6 ; i ++){
+	for(int i = 0; i < 6 ; i ++){ // Por cada plano, mirar si está fuera o interseca
 		int checkBBPlane = BBoxPlaneIntersect(theBBox,m_fPlanes[i]);
 		if( checkBBPlane == +IREJECT){//Fuera
 			return 1;
