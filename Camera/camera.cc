@@ -325,16 +325,11 @@ int Camera::checkFrustum(const BBox *theBBox,
 		int checkBBPlane = BBoxPlaneIntersect(theBBox,m_fPlanes[i]);
 		if( checkBBPlane == +IREJECT){//Fuera
 			return 1;
-		}else if(checkBBPlane == -IREJECT){ //Plano dentro
-			dentro++; //Hay que mirar si está dentro de los 6
+		}else if(checkBBPlane == IINTERSECT){ //Un plano interseca
+			return 0;
 		}
 	}
-	if(dentro == 6){ //Si está dentro de los 6 Planos
-		return -1;
-	}else{
-		return 0; // Interseca
-	}
-
+	return -1; // Ha mirado todos los planos y se encuentra dentro (ni fuera ni interseca)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
