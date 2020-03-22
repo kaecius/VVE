@@ -320,15 +320,20 @@ void  Camera::arcLeftRight(float angle) {
 
 int Camera::checkFrustum(const BBox *theBBox,
 						 unsigned int *planesBitM) {
-	for(int i = 0; i < 6 ; i ++){ // Por cada plano, mirar si está fuera o interseca
+	int dentro = 0;
+	for(int i = 0; i < 6 ; i ++){
 		int checkBBPlane = BBoxPlaneIntersect(theBBox,m_fPlanes[i]);
 		if( checkBBPlane == +IREJECT){//Fuera
 			return 1;
-		}else if(checkBBPlane == IINTERSECT){ //Un plano interseca
-			return 0;
+		}else if(checkBBPlane == -IREJECT){ //Plano dentro
+			dentro++; //Hay que mirar si está dentro de los 6
 		}
 	}
-	return -1; // Ha mirado todos los planos y se encuentra dentro (ni fuera ni interseca)
+	if(dentro == 6){ //Si está dentro de los 6 Planos
+		return -1;
+	}else{
+		return 0; // Interseca
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
