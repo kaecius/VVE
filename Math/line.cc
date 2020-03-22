@@ -24,7 +24,6 @@ Line & Line::operator=(const Line & line) {
 void Line::setFromAtoB(const Vector3 & A, const Vector3 & B) {
 	m_O = A;
 	m_d = B - A;
-	assert(m_d.length() > 10^-6);
 	m_d.normalize();
 }
 
@@ -42,6 +41,7 @@ Vector3 Line::at(float u) const {
 
 float Line::paramDistance(const Vector3 & P) const {
 	float res = 0.0f;
+	assert(m_d.length() > Constants::distance_epsilon); // asegura que no se divida entre 0
 	res = m_d.dot((P-m_O)) / m_d.dot(m_d);
 	return res;
 }
