@@ -18,7 +18,7 @@
 int BSpherePlaneIntersect(const BSphere *bs, Plane *pl) {
 	int result = IINTERSECT;
 
-	float signedDistance = pl->distance(bs->getPosition()); // Distancia con signo, |d|<=r Interseca, |d|>r no interseca => + fuera, - dentro  
+	float signedDistance = pl->signedDistance(bs->getPosition()); // Distancia con signo, |d|<=r Interseca, |d|>r no interseca => + fuera, - dentro  
 	if(fabs(signedDistance) > bs->getRadius()){ // IREJECT
 		if(signedDistance < 0){
 			result = -IREJECT;
