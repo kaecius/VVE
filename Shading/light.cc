@@ -88,15 +88,19 @@ void Light::placeScene() {
 	RenderState *rs = RenderState::instance();
 	Trfm3D &modelView = rs->top(RenderState::modelview);
 	/* =================== PUT YOUR CODE HERE ====================== */
+	Vector3 v;
 	if(m_type == directional){ //Direccional (Vector)
-		m_positionEye = modelView.transformVector(m_position);
+		v = m_position;
+		v.normalize(); 
+		m_positionEye = modelView.transformVector(v);
 		m_positionEye.normalize();
 	}else if( m_type == positional){ //Posicional (Punto)
 		m_positionEye = modelView.transformPoint(m_position);
 	}else{ //Foco Punto + vector direccion		 
 		m_positionEye = modelView.transformPoint(m_position);
-		m_spotDirectionEye = modelView.transformVector(m_spotDirection);
-		m_spotDirectionEye.normalize();
+		v = m_spotDirection;
+		v.normalize();
+		m_spotDirectionEye = modelView.transformVector(v);
 	}
 	/* =================== END YOUR CODE HERE ====================== */
 }
