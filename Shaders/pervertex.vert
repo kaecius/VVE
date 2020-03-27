@@ -43,7 +43,7 @@ void main() {
 	vec3 normalEye;
 
 	positionEye = (modelToCameraMatrix * vec4(v_position,1)).xyz; 
-	normalEye = normalize((modelToCameraMatrix * vec4(v_normal,1)).xyz); //normal pasada a la camara y normalizado
+	normalEye = normalize((modelToCameraMatrix * vec4(v_normal,0)).xyz); //normal pasada a la camara y normalizado
 
 	vec3 color_difuso = vec3(0.0,0.0,0.0); //RGB
 
