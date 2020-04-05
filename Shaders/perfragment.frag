@@ -98,7 +98,7 @@ void main() {
 	vec3 v;
 
 	normalEye = normalize(f_normal); //normal pasada a la camara y normalizado
-	v = normalize(-f_position); // vector que va desde el vertice a la camara (0,0,0,1) - (f_position,1) normalizado
+	v = normalize(f_viewDirection); // vector que va desde el vertice a la camara (0,0,0,1) - (f_position,1) normalizado
 
 	vec3 color_difuso = vec3(0.0,0.0,0.0); //RGB
 	vec3 color_especular = vec3(0.0,0.0,0.0); //RGB

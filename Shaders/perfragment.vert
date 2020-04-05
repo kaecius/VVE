@@ -20,6 +20,7 @@ void main() {
 
 	f_position = (modelToCameraMatrix * vec4(v_position,1)).xyz;
 	f_normal = normalize((modelToCameraMatrix * vec4(v_normal,0)).xyz);
+	f_viewDirection = normalize(-f_position); // no estoy seguro si hay que normalizar
 	f_texCoord = v_texCoord;
 	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
 }
