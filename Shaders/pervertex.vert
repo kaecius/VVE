@@ -37,16 +37,16 @@ float lambert_factor(vec3 n, vec3 l){
 }
 
 float dist_factor(int i,float d){ //Indice de la luz y la distancia - Atenuacion
-	float resultado = 0.0;
+	float resultado = 1.0;
 	float denominador = theLights[i].attenuation[0] + theLights[i].attenuation[1]*d + theLights[i].attenuation[2]*d*d;
-	if(denominador != 0){
+	if(denominador > 0){
 		resultado = 1.0 / denominador;
 	}
 	return resultado;
 }
 
 
-void specular_light(in int i,in vec3 normalEye,in vec3 L,in vec3 v,inout vec3 specular){
+void specular_light(in int i,in vec3 normalEye,in vec3 L,in vec3 v,in float factor,inout vec3 specular){
 	float NoL = dot(normalEye,L);
 	vec3 r = 2*NoL*normalEye - L;
 	
@@ -60,9 +60,10 @@ void directional_light(in int i,in vec3 v,in vec3 normalEye,in vec3 positionEye,
 	vec3 L = normalize(-1.0*theLights[i].position.xyz);
 	//lambert factor, funcion dada la normal y la luz devuelve la aportacion
 	//Acumulacion del color difuso dado por las luces direccionales
-	diffuse += lambert_factor(normalEye,L) * theLights[i].diffuse; // factor lambert por la componente difusa de la luz y del material -- theMaterial se puede sacar factor comun	
+	float lfactor = lambert_factor(normalEye,L);
+	diffuse += lfactor  * theLights[i].diffuse; // factor lambert por la componente difusa de la luz y del material -- theMaterial se puede sacar factor comun	
 	//Especular
-	specular_light(i,normalEye,L,v,specular);
+	specular_light(i,normalEye,L,v,lfactor,specular);
 
 }
 
@@ -73,35 +74,27 @@ void positional_light(in int i,in vec3 v,in vec3 normalEye,in vec3 positionEye,i
 	float factor;
 	//Difusa
 	if(d_L > 0){
-		factor = lambert_factor(normalEye,normalize(L));	
-		f_dist = dist_factor(i,d_L);
-		if(f_dist > 0 ){
-			factor *= f_dist;
-		}
+		factor = lambert_factor(normalEye,normalize(L)) * dist_factor(i,d_L);	
 		diffuse += theLights[i].diffuse * factor;
+		specular_light(i,normalEye,normalize(L),v,factor,specular);
 	}
-	//Especular
-	specular_light(i,normalEye,normalize(L),v,specular);
 }
 
 void spotlight_light(in int i,in vec3 v,in vec3 normalEye, in vec3 positionEye, inout vec3 diffuse, inout vec3 specular){
 	vec3 L = theLights[i].position.xyz - positionEye; // vector del vertice a la luz
 	float length_L = length(L); // Distancia entre el vertice y el punto de la luz
-	float cos_theta_S = max(dot(normalize(-L),normalize(theLights[i].spotDir)),0); // coseno entre el vector de la luz y el de direccion
+	if(length_L > 0){
+		float cos_theta_S = max(dot(normalize(-L),normalize(theLights[i].spotDir)),0); // coseno entre el vector de la luz y el de direccion
+		if(cos_theta_S >= theLights[i].cosCutOff){ // dentro
+			float lambert = lambert_factor(normalEye,normalize(L));
+			float cspot = pow(cos_theta_S,theLights[i].exponent);
+			float factors = lambert * cspot * dist_factor(i,length_L);
 
-	if(cos_theta_S >= theLights[i].cosCutOff){ // dentro
-		float lambert = lambert_factor(normalEye,normalize(L));
-		float cspot = pow(cos_theta_S,theLights[i].exponent);
-		float dfactor = dist_factor(i,length_L);
-		float factors = lambert * cspot;
-		
-		if(dfactor > 0){
-			factors *= dfactor;
+			diffuse += theLights[i].diffuse * factors ;
+			specular_light(i,normalEye,normalize(L),v,factors,specular);
 		}
-
-		diffuse += theLights[i].diffuse * factors ;
-		specular_light(i,normalEye,normalize(L),v,specular);
 	}
+	
 }
 
 void main() {
@@ -129,6 +122,6 @@ void main() {
 
 	f_color.rgb = scene_ambient + color_difuso * theMaterial.diffuse + color_especular * theMaterial.specular;
 	f_color.a = 1.0;
-
+	f_texCoord = v_texCoord;
 	gl_Position = modelToClipMatrix * vec4(v_position, 1);
 }
