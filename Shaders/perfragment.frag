@@ -68,11 +68,11 @@ void positional_light(in int i,in vec3 v,in vec3 normalEye,in vec3 positionEye,i
 	float d_L = length(L); //Distancia euclidea de L
 	float f_dist;
 	float factor;
-	//Difusa
 	if(d_L > 0){
-		factor = lambert_factor(normalEye,normalize(L)) * dist_factor(i,d_L);	
+		L = normalize(L);
+		factor = lambert_factor(normalEye,L) * dist_factor(i,d_L);	
 		diffuse += theLights[i].diffuse * factor;
-		specular_light(i,normalEye,normalize(L),v,factor,specular);
+		specular_light(i,normalEye,L,v,factor,specular);
 	}
 }
 
@@ -80,14 +80,15 @@ void spotlight_light(in int i,in vec3 v,in vec3 normalEye, in vec3 positionEye, 
 	vec3 L = theLights[i].position.xyz - positionEye; // vector del vertice a la luz
 	float length_L = length(L); // Distancia entre el vertice y el punto de la luz
 	if(length_L > 0){
+		L = normalize(L);
 		float cos_theta_S = max(dot(normalize(-L),normalize(theLights[i].spotDir)),0); // coseno entre el vector de la luz y el de direccion
 		if(cos_theta_S >= theLights[i].cosCutOff){ // dentro
-			float lambert = lambert_factor(normalEye,normalize(L));
+			float lambert = lambert_factor(normalEye,L);
 			float cspot = pow(cos_theta_S,theLights[i].exponent);
 			float factors = lambert * cspot * dist_factor(i,length_L);
 
 			diffuse += theLights[i].diffuse * factors ;
-			specular_light(i,normalEye,normalize(L),v,factors,specular);
+			specular_light(i,normalEye,L,v,factors,specular);
 		}
 	}
 	
