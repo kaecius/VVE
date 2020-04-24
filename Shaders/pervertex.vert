@@ -46,14 +46,17 @@ float dist_factor(int i,float d){ //Indice de la luz y la distancia - Atenuacion
 }
 
 
-void specular_light(in int i,in vec3 normalEye,in vec3 L,in vec3 v,in float factor,inout vec3 specular){
-	float NoL = dot(normalEye,L);
-	vec3 r = 2*NoL*normalEye - L;
-	
-	float RoV = dot(normalize(r),v);
-
-	specular += NoL * max(0,pow(RoV,theMaterial.shininess)) * theLights[i].specular; // (n·l)max(0,(r·v)^m)*mspec*ispec
+float specular_factor(vec3 n,vec3 l, vec3 v, float m){
+	float factor = 1.0;
+	float NoL = dot(n,l);
+	if(NoL > 0){
+		vec3 r = 2*dot(n,l)*n -l;
+		float RoV = dot(normalize(r),v); // v viene normalizado
+		factor = dot(n,l)*max(0,pow(RoV,m)); // (n·l)max(0,pow(r·v,m))
+	}
+	return factor;
 }
+
 
 void directional_light(in int i,in vec3 v,in vec3 normalEye,in vec3 positionEye, inout vec3 diffuse, inout vec3 specular){
 	//Esta en el S.C. de la camara
@@ -63,8 +66,7 @@ void directional_light(in int i,in vec3 v,in vec3 normalEye,in vec3 positionEye,
 	float lfactor = lambert_factor(normalEye,L);
 	diffuse += lfactor  * theLights[i].diffuse; // factor lambert por la componente difusa de la luz y del material -- theMaterial se puede sacar factor comun	
 	//Especular
-	specular_light(i,normalEye,L,v,lfactor,specular);
-
+	specular += lfactor * specular_factor(normalEye,L,v,theMaterial.shininess) * theLights[i].specular ;
 }
 
 void positional_light(in int i,in vec3 v,in vec3 normalEye,in vec3 positionEye,inout vec3 diffuse,inout vec3 specular){
@@ -76,7 +78,7 @@ void positional_light(in int i,in vec3 v,in vec3 normalEye,in vec3 positionEye,i
 		L = normalize(L);
 		factor = lambert_factor(normalEye,L) * dist_factor(i,d_L);	
 		diffuse += theLights[i].diffuse * factor;
-		specular_light(i,normalEye,L,v,factor,specular);
+		specular += factor * specular_factor(normalEye,L,v,theMaterial.shininess) * theLights[i].specular;
 	}
 }
 
@@ -92,7 +94,7 @@ void spotlight_light(in int i,in vec3 v,in vec3 normalEye, in vec3 positionEye, 
 			float factors = lambert * cspot * dist_factor(i,length_L);
 
 			diffuse += theLights[i].diffuse * factors ;
-			specular_light(i,normalEye,L,v,factors,specular);
+			specular += factors * specular_factor(normalEye,L,v,theMaterial.shininess) * theLights[i].specular;
 		}
 	}
 	
