@@ -57,7 +57,7 @@ float specular_factor(vec3 n,vec3 l, vec3 v, float m){
 }
 
 
-void directional_light(in int i,in vec3 v,in vec3 normalEye,in vec3 positionEye, inout vec3 diffuse, inout vec3 specular){
+void directional_light(in int i,in vec3 v,in vec3 normalEye, inout vec3 diffuse, inout vec3 specular){
 	vec3 L = normalize(-1.0*theLights[i].position.xyz);
 	float NoL = lambert_factor(normalEye,L);
 	diffuse += theLights[i].diffuse * NoL;	
@@ -109,7 +109,7 @@ void main() {
 
 	for(int i = 0; i < active_lights_n; ++i){
 		if(theLights[i].position.w == 0){ // Es direccional
-			directional_light(i,v,normalEye,positionEye,color_difuso,color_especular);
+			directional_light(i,v,normalEye,color_difuso,color_especular);
 		}else if(theLights[i].cosCutOff == 0.0){ //Posicional
 			positional_light(i,v,normalEye,positionEye,color_difuso,color_especular);
 		}else{//Spotlight
