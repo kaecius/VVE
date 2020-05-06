@@ -467,18 +467,16 @@ void Node::setCulled(bool culled) {
 void Node::frustumCull(Camera *cam) {
 	int checkFrustum = cam->checkFrustum(m_containerWC,0);
 	if(checkFrustum == -1){ // Dentro del Frustrum 
-		m_isCulled = 0;
+		setCulled(0); //Visible tanto el actual como sus hijos
 	}else if(checkFrustum == 1){ //Fuera
-		m_isCulled = 1; // 
+		setCulled(1); //No visible tanto el actual como sus hijos 
 	}else{ // Interseca, el nodo es visible y miro los hijos
 		m_isCulled = 0;
 		for(list<Node *>::iterator it = m_children.begin(), end = m_children.end();
 		it != end; ++it) {
-		Node *theChild = *it;
-		theChild->frustumCull(cam);
-	}
-	    
-
+			Node *theChild = *it;
+			theChild->frustumCull(cam);
+		}
 	}
 }
 
