@@ -36,40 +36,11 @@ varying vec3 f_viewDirection;     // tangent space
 varying vec3 f_lightDirection[4]; // tangent space
 varying vec3 f_spotDirection[4];  // tangent space
 
-
-/* model to tangent
-| tx ty tz 0 |
-| bx by bz 0 |
-| nx ny nz 0 |
-| 0  0  0  1 |
-*/
-
-/*void fillMTS(inout mat4 modelToTangentSpaceMatrix){
-	//Por Columnas
-	modelToTangentSpaceMatrix[0][0] = v_TBN_t[0];
-	modelToTangentSpaceMatrix[0][1] = v_TBN_b[0];
-	modelToTangentSpaceMatrix[0][2] = v_normal[0];
-	modelToTangentSpaceMatrix[0][3] = 0;
-
-	modelToTangentSpaceMatrix[1][0] = v_TBN_t[1];
-	modelToTangentSpaceMatrix[1][1] = v_TBN_b[1];
-	modelToTangentSpaceMatrix[1][2] = v_normal[1];
-	modelToTangentSpaceMatrix[1][3] = 0;
-
-	modelToTangentSpaceMatrix[2][0] = v_TBN_t[2];
-	modelToTangentSpaceMatrix[2][1] = v_TBN_b[2];
-	modelToTangentSpaceMatrix[2][2] = v_normal[2];
-	modelToTangentSpaceMatrix[2][3] = 0;
-
-	modelToTangentSpaceMatrix[3] = vec4(0,0,0,1);
-
-}*/
-
 void fillCTS(inout mat4 cameraToTangentSpaceMatrix){
 	//Pasar los vectores de la base del espacio tangente al sistema de la camara
-	vec4 v_normal_camera = modelToCameraMatrix * vec4(v_normal,0);
-	vec4 v_TBN_t_camera = modelToCameraMatrix * vec4(v_TBN_t,0);
-	vec4 v_TBN_b_camera = modelToCameraMatrix * vec4(v_TBN_b,0);
+	vec4 v_normal_camera = normalize(modelToCameraMatrix * vec4(v_normal,0));
+	vec4 v_TBN_t_camera = normalize(modelToCameraMatrix * vec4(v_TBN_t,0));
+	vec4 v_TBN_b_camera = normalize(modelToCameraMatrix * vec4(v_TBN_b,0));
 
 	//Construir matriz con la nueva base
 	cameraToTangentSpaceMatrix[0][0] = v_TBN_t[0];
@@ -94,12 +65,10 @@ void fillCTS(inout mat4 cameraToTangentSpaceMatrix){
 void main() {
 	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
 	f_texCoord = v_texCoord;
-	f_position = (modelToCameraMatrix * vec4(v_position,1)).xyz;
-
-	//mat4 modelToTangentSpaceMatrix;
 	mat4 cameraToTangentSpaceMatrix;
-	//fillMTS(modelToTangentSpaceMatrix);
+	
 	fillCTS(cameraToTangentSpaceMatrix);
+	f_position = (cameraToTangentSpaceMatrix * modelToCameraMatrix * vec4(v_position,1)).xyz;
 	f_viewDirection = -1*(cameraToTangentSpaceMatrix * modelToCameraMatrix * vec4(v_position,1)).xyz;
 	for(int i = 0; i < active_lights_n; ++i){
 		f_lightDirection[i] = (cameraToTangentSpaceMatrix  * theLights[i].position).xyz;
