@@ -45,9 +45,13 @@ float specular_factor(vec3 n,vec3 l, vec3 v, float m){
 	float factor = 1.0;
 	float NoL = dot(n,l);
 	if(NoL > 0){
-		vec3 r = 2*dot(n,l)*n -l;
+		vec3 r = 2*NoL*n -l;
 		float RoV = dot(normalize(r),v); // v viene normalizado
-		factor = dot(n,l)*max(0,pow(RoV,m));
+		if(RoV > 0.0){ //Es necesario mirar si la base es 0 para no calcular el pow
+			factor = NoL*pow(RoV,m); 
+		}else{
+			factor = 0.0;
+		}
 	}
 	return factor;
 }
@@ -80,18 +84,18 @@ void spotlight_light(in int i,in vec3 v,in vec3 normalEye, in vec3 positionEye, 
 	vec3 L = theLights[i].position.xyz - positionEye; // vector del vertice a la luz
 	float length_L = length(L); // Distancia entre el vertice y el punto de la luz
 	if(length_L > 0){
-		L = normalize(L);
-		float cos_theta_S = max(dot(normalize(-L),normalize(theLights[i].spotDir)),0); // coseno entre el vector de la luz y el de direccion
+		L =normalize(L);
+		float cos_theta_S = dot(normalize(-L),normalize(theLights[i].spotDir)); // coseno entre el vector de la luz y el de direccion
 		if(cos_theta_S >= theLights[i].cosCutOff){ // dentro
 			float lambert = lambert_factor(normalEye,L);
-			float cspot = pow(cos_theta_S,theLights[i].exponent);
-			float factors = lambert * cspot * dist_factor(i,length_L);
-
-			diffuse += theLights[i].diffuse * factors ;
-			specular += factors * specular_factor(normalEye,L,v,theMaterial.shininess) * theLights[i].specular;
+			if(cos_theta_S > 0){//Comprobación si base 0 para no calcular el pow
+				float cspot = pow(cos_theta_S,theLights[i].exponent); 
+				float factors = lambert * cspot * dist_factor(i,length_L);
+				diffuse += theLights[i].diffuse * factors ;
+				specular += factors * specular_factor(normalEye,L,v,theMaterial.shininess) * theLights[i].specular;
+			}
 		}
-	}
-	
+	}	
 }
 
 void main() {
