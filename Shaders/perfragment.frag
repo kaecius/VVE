@@ -83,7 +83,7 @@ void spotlight_light(in int i,in vec3 v,in vec3 normalEye, in vec3 positionEye, 
 				float NoL = lambert_factor(normalEye,L);
 				float attenuation = dist_factor(i,length_L); //------------------No se si ponerlo
 				diffuse += theLights[i].diffuse * NoL * attenuation;
-				specular += theLights[i].specular * cspot * NoL * attenuation * cspot * specular_factor(normalEye,L,v,theMaterial.shininess); //----------
+				specular += theLights[i].specular * NoL * attenuation * cspot * specular_factor(normalEye,L,v,theMaterial.shininess); //----------
 			}
 		}
 	}	
