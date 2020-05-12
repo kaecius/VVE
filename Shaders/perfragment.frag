@@ -73,20 +73,16 @@ void positional_light(in int i,in vec3 v,in vec3 normalEye,in vec3 positionEye,i
 
 void spotlight_light(in int i,in vec3 v,in vec3 normalEye, in vec3 positionEye, inout vec3 diffuse, inout vec3 specular){
 	vec3 L = theLights[i].position.xyz - positionEye; // vector del vertice a la luz
-	float length_L = length(L);
-	if(length_L > 0){
-		L =normalize(L);
-		float cos_theta_S = dot(normalize(-L),normalize(theLights[i].spotDir)); // coseno entre el vector de la luz y el de direccion
-		if(cos_theta_S >= theLights[i].cosCutOff){ // dentro
-			if(cos_theta_S > 0){//Comprobación si base 0 para no calcular el pow
-				float cspot = pow(cos_theta_S,theLights[i].exponent); 
-				float NoL = lambert_factor(normalEye,L);
-				float attenuation = dist_factor(i,length_L); //------------------No se si ponerlo
-				diffuse += theLights[i].diffuse * NoL * attenuation;
-				specular += theLights[i].specular * NoL * attenuation * cspot * specular_factor(normalEye,L,v,theMaterial.shininess); //----------
-			}
+	L =normalize(L);
+	float cos_theta_S = dot(-L,normalize(theLights[i].spotDir)); // Se supone que viene normalizado spotdir, coseno entre el vector de la luz y el de direccion
+	if(cos_theta_S >= theLights[i].cosCutOff){ // dentro
+		if(cos_theta_S > 0){//Comprobación si base 0 para no calcular el pow
+			float cspot = pow(cos_theta_S,theLights[i].exponent); 
+			float NoL = lambert_factor(normalEye,L);
+			diffuse += theLights[i].diffuse * NoL * cspot;
+			specular += theLights[i].specular * cspot * NoL * specular_factor(normalEye,L,v,theMaterial.shininess);
 		}
-	}	
+	}
 }
 
 void main() {
