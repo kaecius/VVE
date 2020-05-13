@@ -199,6 +199,7 @@ void ShaderProgram::beforeDraw() {
 	Material *mat;
 	Texture *tex;
 	Texture *bumpMaptex;
+	Texture *specMaptex;
 	RenderState *rs = RenderState::instance();
 	static char buffer[1024];
 
@@ -257,6 +258,11 @@ void ShaderProgram::beforeDraw() {
 		if (bumpMaptex != 0) {
 			bumpMaptex->bindGLUnit(Constants::gl_texunits::bump);
 			this->send_uniform("bumpmap", Constants::gl_texunits::bump);
+		}
+		specMaptex = mat->getSpecularMap();
+		if (specMaptex != 0) {
+			specMaptex->bindGLUnit(Constants::gl_texunits::specular);
+			this->send_uniform("specmap", Constants::gl_texunits::specular);
 		}
 	}
 
