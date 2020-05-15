@@ -266,9 +266,9 @@ void ShaderProgram::beforeDraw() {
 		}
 	}
 
-	if(this->has_capability("sc")){
+	/*if(this->has_capability("sc")){
 		this->send_uniform("sc",rs->getSc());
-	}
+	}*/
 }
 
 void ShaderProgram::print() const {
