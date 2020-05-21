@@ -68,7 +68,7 @@ void ShaderProgram::initDefaultUniforms() {
 
 	init_uniform(m_uniforms, "texture0", Uniform::type::usampler, m_name, m_program);
 	//init_uniform(m_uniforms, "bumpmap", Uniform::type::usampler, m_name, m_program);
-	//init_uniform(m_uniforms, "cubemap", Uniform::type::usampler, m_name, m_program);
+	init_uniform(m_uniforms, "cubemap", Uniform::type::usampler, m_name, m_program);
 
 	init_uniform(m_uniforms, "modelToCameraMatrix", Uniform::type::umat4, m_name, m_program);
 	init_uniform(m_uniforms, "modelToWorldMatrix", Uniform::type::umat4, m_name, m_program);
@@ -264,10 +264,14 @@ void ShaderProgram::beforeDraw() {
 			specMaptex->bindGLUnit(Constants::gl_texunits::specular);
 			this->send_uniform("specmap", Constants::gl_texunits::specular);
 		}
+		
+	}
+	Texture *ctex = TextureManager::instance()->find("CubeEnv");
+	if(ctex != 0){
 		if(this->has_capability("cube_env")){
-			tex->bindGLUnit(Constants::gl_texunits::envmap);
+			ctex->bindGLUnit(Constants::gl_texunits::envmap);
 			this->send_uniform("envmap",Constants::gl_texunits::envmap);
-			this->send_uniform("campos",RenderState::instance()->getCamera()->getPosition());
+			this->send_uniform("campos",rs->getCamera()->getPosition());
 		}
 	}
 	/*if(this->has_capability("sc")){
