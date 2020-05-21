@@ -264,8 +264,12 @@ void ShaderProgram::beforeDraw() {
 			specMaptex->bindGLUnit(Constants::gl_texunits::specular);
 			this->send_uniform("specmap", Constants::gl_texunits::specular);
 		}
+		if(this->has_capability("cube_env")){
+			tex->bindGLUnit(Constants::gl_texunits::envmap);
+			this->send_uniform("envmap",Constants::gl_texunits::envmap);
+			this->send_uniform("campos",RenderState::instance()->getCamera()->getPosition());
+		}
 	}
-
 	/*if(this->has_capability("sc")){
 		this->send_uniform("sc",rs->getSc());
 	}*/
