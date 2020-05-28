@@ -18,4 +18,4 @@ class ProjectiveTexture{
     private:
         std::string m_texName;
         std::string m_camName;
-}
+};

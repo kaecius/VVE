@@ -3,6 +3,7 @@
 #include "camera.h"
 #include "cameraManager.h"
 #include "renderState.h"
+#include "vector3.h"
 
 ProjectiveTexture::ProjectiveTexture(std::string &tname,std::string &cname){
     this->m_texName = tname;
@@ -35,5 +36,20 @@ Texture *ProjectiveTexture::getTexture(){
 void ProjectiveTexture::placeScene(){
     Trfm3D &modelView = RenderState::instance()->top(RenderState::modelview);
     Camera *projCam = CameraManager::instance()->find(this->m_camName);
+    
+    Vector3 pos = projCam->getPosition(); 
+    pos = modelView.transformPoint(pos);
+
+    Vector3 at = projCam->getDirection();
+    at = modelView.transformVector(at);
+    at.normalize();
+
+    Vector3 up = projCam->getUp(); 
+    up = modelView.transformVector(up);
+    up.normalize();
+
+    projCam->lookAt(pos,at,up);
+
+
 
 }

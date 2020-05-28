@@ -205,6 +205,7 @@ void Camera::setNear(float near) { m_near = near; updateProjection(); }
 float Camera::getNear() const { return m_near; }
 Vector3 Camera::getPosition() const { return m_E; }
 Vector3 Camera::getDirection() const { return -1.0f * m_D; }
+Vector3 Camera::getUp() const { return m_Up; }
 
 ////////////////////////////////////////////////
 // trfm transformations

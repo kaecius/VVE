@@ -74,7 +74,7 @@ public:
 	float getNear() const;       //!< Get near plane distance (positive)
 	Vector3 getPosition() const;  //!< Get camera position in world coordinates.
 	Vector3 getDirection() const; //!< Get camera direction (the vector the camera is aiming at) in world coordinates
-
+	Vector3 Camera::getUp() const;
 	////////////////////////////////////////////////
 	// trfm transformations
 
