@@ -8,7 +8,7 @@
 
 class ProjectiveTexture{
     public:
-        ProjectiveTexture(std::string &tName, std::string &cName);
+        ProjectiveTexture(const std::string &tName, const std::string &cName);
 
         Trfm3D &getMatrix();
         Texture *getTexture();
@@ -18,4 +18,5 @@ class ProjectiveTexture{
     private:
         std::string m_texName;
         std::string m_camName;
+        Trfm3D m_projectionMatrix;
 };

@@ -5,29 +5,29 @@
 #include "renderState.h"
 #include "vector3.h"
 
-ProjectiveTexture::ProjectiveTexture(std::string &tname,std::string &cname){
+ProjectiveTexture::ProjectiveTexture(const std::string &tname, const std::string &cname){
     this->m_texName = tname;
     this->m_camName = cname;
-    
 }
 
 Trfm3D &ProjectiveTexture::getMatrix(){
-    Trfm3D transfTex;
-    Texture *tex = this->getTexture();
     Camera *projCam = CameraManager::instance()->find(this->m_camName);
     //Mts [-1,1] -> [0,1]  (s+1)/2
-    Trfm3D mTs;
-    mTs.addTrans(Vector3(0.5,0.5,0.5)); // Mt -> +1/2
-    mTs.setScale(0.5); //Ms -> s/2
-    transfTex.add(mTs);
+    Trfm3D mS;
+    mS.setScale(0.5);
+    m_projectionMatrix = Trfm3D(mS);
+
+    Trfm3D mT;
+    mT.setTrans(Vector3(1,1,1)); 
+    m_projectionMatrix.add(mT);
 
     //Mp
-    transfTex.add(projCam->projectionTrfm());
+    m_projectionMatrix.add(projCam->projectionTrfm());
 
     //Mb
-    transfTex.add(projCam->viewTrfm());
+    m_projectionMatrix.add(projCam->viewTrfm());
 
-    return transfTex;
+    return m_projectionMatrix;
 }
 
 Texture *ProjectiveTexture::getTexture(){
@@ -49,7 +49,4 @@ void ProjectiveTexture::placeScene(){
     up.normalize();
 
     projCam->lookAt(pos,at,up);
-
-
-
 }
