@@ -7,6 +7,7 @@
 #include "mgriter.h"
 #include "texture.h"
 #include "texturert.h"
+#include "projectiveTexture.h"
 
 class TextureManager {
 
@@ -55,6 +56,8 @@ public:
 
 	Texture *find(const std::string & fName) const;
 
+	ProjectiveTexture *findProjectiveTexture(const std::string &fName) const;
+
 	/**
 	 * Get the default texture
 	 *
@@ -80,5 +83,5 @@ private:
 
 	Texture *m_white;
 	std::map<std::string, Texture *> m_hash;
-
+	std::map<std::string, ProjectiveTexture *> m_hash_proj;
 };

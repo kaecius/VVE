@@ -10,6 +10,8 @@
 #include "texture.h"
 #include "material.h"
 #include "renderState.h"
+#include "projectiveTexture.h"
+#include "cameraManager.h"
 
 static void init_uniform(std::map<std::string, Uniform> & h,
 						 const char * uname,
@@ -272,6 +274,17 @@ void ShaderProgram::beforeDraw() {
 			ctex->bindGLUnit(Constants::gl_texunits::envmap);
 			this->send_uniform("envmap",Constants::gl_texunits::envmap);
 			this->send_uniform("campos",rs->getCamera()->getPosition());
+		}
+	}
+	
+
+	if(this->has_capability("projective")){
+		ProjectiveTexture *projTex = TextureManager::instance()->findProjectiveTexture("obj/batman.jpg");
+		if(projTex != 0){
+			Texture *ptex = projTex->getTexture();
+			ptex->bindGLUnit(Constants::gl_texunits::projective);
+			this->send_uniform("projectivemap",Constants::gl_texunits::projective);
+			this->send_uniform("projectiveMatrix",projTex->getMatrix());
 		}
 	}
 	/*if(this->has_capability("sc")){

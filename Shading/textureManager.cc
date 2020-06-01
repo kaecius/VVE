@@ -62,6 +62,15 @@ Texture *TextureManager::createProj(const std::string & fName) {
 	Texture * newtex = new Texture(fName);
 	newtex->setProj(fName);
 	it = m_hash.insert(make_pair(fName, newtex)).first;
+	//------ Projective Texture ------
+	//Se guarda en un mapa de texturas proyectivas
+	//Para siguientes versiones -> parametrizar cname con un nuevo campo para el shader que sea la camara asociada.
+	map<string, ProjectiveTexture *>::iterator itProj = m_hash_proj.find(fName);
+	
+	//No hace falta la comprobación de duplicidad ya que se necesita la textura para la proyectiva
+	ProjectiveTexture *projTex = new ProjectiveTexture(fName,"projCamera"); //Lo mejor sería obtener el nombre de la cámara como parámetro desde el json
+	m_hash_proj.insert(make_pair(fName,projTex)).first;
+
 	return it->second;
 }
 
@@ -114,6 +123,12 @@ Texture *TextureManager::find(const std::string & fName) const {
 }
 
 Texture *TextureManager::whiteTexture() const { return m_white; }
+
+ProjectiveTexture *TextureManager::findProjectiveTexture(const std::string &fName) const{
+	map<string, ProjectiveTexture *>::const_iterator it = m_hash_proj.find(fName);
+	if (it == m_hash_proj.end()) return 0;
+	return it->second;
+}
 
 // Debug
 
