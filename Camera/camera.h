@@ -75,6 +75,7 @@ public:
 	Vector3 getPosition() const;  //!< Get camera position in world coordinates.
 	Vector3 getDirection() const; //!< Get camera direction (the vector the camera is aiming at) in world coordinates
 	Vector3 getUp() const;
+	Vector3 getAt() const;
 	////////////////////////////////////////////////
 	// trfm transformations
 

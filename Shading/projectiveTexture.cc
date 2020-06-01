@@ -43,6 +43,7 @@ Trfm3D &ProjectiveTexture::getMatrix(){
 Texture *ProjectiveTexture::getTexture(){
     return TextureManager::instance()->find(this->m_texName);
 }
+
 void ProjectiveTexture::placeScene(){
     Trfm3D &modelView = RenderState::instance()->top(RenderState::modelview);
     Camera *projCam = CameraManager::instance()->find(this->m_camName);
@@ -50,13 +51,12 @@ void ProjectiveTexture::placeScene(){
     Vector3 pos = projCam->getPosition(); 
     pos = modelView.transformPoint(pos);
 
-    Vector3 at = projCam->getDirection();
-    at = modelView.transformVector(at);
-    at.normalize();
+    Vector3 at = projCam->getAt();
+    at = modelView.transformPoint(at);
 
     Vector3 up = projCam->getUp(); 
-    up = modelView.transformVector(up);
-    up.normalize();
+    //up = modelView.transformVector(up);
 
     projCam->lookAt(pos,at,up);
+    projCam->print();
 }
