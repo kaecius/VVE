@@ -111,7 +111,7 @@ void main() {
 
 	vec4 texColor = texture2D(texture0, f_texCoord);
 	gl_FragColor *= texColor;
-	gl_FragColor += texture2DProj(projectivemap,f_ptexCoord) * 0.5;
+	gl_FragColor += texture2DProj(projectivemap,f_ptexCoord) * 0.7;
 
 
 }

@@ -75,6 +75,10 @@ public:
 	iterator begin();
 	iterator end();
 
+	typedef mgrIter<ProjectiveTexture *> projTex_iterator;
+	projTex_iterator projTex_begin();
+	projTex_iterator projTex_end();
+
 private:
 	TextureManager();
 	~TextureManager();

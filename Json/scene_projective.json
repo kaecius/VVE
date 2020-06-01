@@ -82,7 +82,7 @@
         {
             "name": "projCamera",
             "type": "perspective",
-            "fovy": 0.7854,
+            "fovy": 0.4,
             "aspect": 1.0,
             "near": 0.1,
             "far": 1500.0,
@@ -92,9 +92,9 @@
                 0
             ],
             "lookAt": [
-                0,
-                5,
-                -1
+                -10,
+                -30,
+                -100.0
             ],
             "up": [
                 0,

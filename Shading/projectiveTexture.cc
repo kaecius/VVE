@@ -64,7 +64,7 @@ void ProjectiveTexture::placeScene(){
     //Guardo la matriz transformada
     m_viewMatrix.clone(projCam->viewTrfm());
 
-    //Devuelvo la camara a como estaba
+    //Devuelvo la camara a como estaba por si se utiliza en otras funcionalidades
     projCam->lookAt(pos,at,up);
 
 }

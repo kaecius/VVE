@@ -130,6 +130,10 @@ ProjectiveTexture *TextureManager::findProjectiveTexture(const std::string &fNam
 	return it->second;
 }
 
+TextureManager::projTex_iterator TextureManager::projTex_begin() { return TextureManager::projTex_iterator(m_hash_proj.begin()); }
+TextureManager::projTex_iterator TextureManager::projTex_end() { return TextureManager::projTex_iterator(m_hash_proj.end()); }
+
+
 // Debug
 
 void TextureManager::print() const {

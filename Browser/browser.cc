@@ -211,6 +211,7 @@ static void Render(Camera *theCamera) {
 
 	RenderState *rs = RenderState::instance();
 	LightManager *lmgr = LightManager::instance();
+	TextureManager *texmgr = TextureManager::instance();
 
 	rs->setCamera(theCamera);
 	// draw the background color
@@ -220,9 +221,10 @@ static void Render(Camera *theCamera) {
 	if (check_cull) check_cull_camera();
 	DisplaySky(theCamera);
 
-	//Se coge solo la necesaria
-	//Se podría recorrer todas, como para las luces
-	TextureManager::instance()->findProjectiveTexture("obj/batman.jpg")->placeScene();
+	//Recorre todas las texturas proyectivas
+	for (TextureManager::projTex_iterator it = texmgr->projTex_begin(), end = texmgr->projTex_end(); it != end; ++it){
+		it->placeScene();
+	}
 
 	// place lights into scene
 	for(LightManager::iterator it = lmgr->begin(), end = lmgr->end();
