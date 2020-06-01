@@ -23,7 +23,7 @@ set(SOURCES
   Math/bboxGL.cc Math/trfmStack.cc
   Geometry/triangleMesh.cc Geometry/gObject.cc Geometry/gObjectManager.cc
   Geometry/triangleMeshGL.cc
-  Shading/light.cc Shading/material.cc Shading/texture.cc Shading/texturert.cc
+  Shading/light.cc Shading/material.cc Shading/texture.cc Shading/texturert.cc Shading/projectiveTexture.cc
   Shading/image.cc Shading/textureManager.cc Shading/materialManager.cc
   Shading/lightManager.cc Shading/imageManager.cc
   Shaders/shaderUtils.cc Shaders/shaderManager.cc Shaders/shader.cc Shaders/uniform.cc
