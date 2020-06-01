@@ -27,12 +27,9 @@ Trfm3D &ProjectiveTexture::getMatrix(){
     //Sería lo mismo que hacer Mt(1/2) * Ms(1/2) - Mt * Ms * P = P/2 + 1/2
 
     Trfm3D mTs;
-    mTs.addTrans(Vector3(0.5,0.5,0.5));
+    mTs.setTrans(Vector3(0.5,0.5,0.5));
     mTs.addScale(0.5);
     m_projectionMatrix = Trfm3D(mTs);
-
-
-
 
     //Mp
     m_projectionMatrix.add(projCam->projectionTrfm());
