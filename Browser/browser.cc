@@ -220,6 +220,10 @@ static void Render(Camera *theCamera) {
 	if (check_cull) check_cull_camera();
 	DisplaySky(theCamera);
 
+	//Se coge solo la necesaria
+	//Se podría recorrer todas, como para las luces
+	TextureManager::instance()->findProjectiveTexture("obj/batman.jpg")->placeScene();
+
 	// place lights into scene
 	for(LightManager::iterator it = lmgr->begin(), end = lmgr->end();
 		it != end; ++it) {

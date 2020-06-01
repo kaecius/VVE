@@ -35,7 +35,7 @@ Trfm3D &ProjectiveTexture::getMatrix(){
     m_projectionMatrix.add(projCam->projectionTrfm());
 
     //Mb
-    m_projectionMatrix.add(projCam->viewTrfm());
+    m_projectionMatrix.add(m_viewMatrix);
 
     return m_projectionMatrix;
 }
@@ -48,15 +48,23 @@ void ProjectiveTexture::placeScene(){
     Trfm3D &modelView = RenderState::instance()->top(RenderState::modelview);
     Camera *projCam = CameraManager::instance()->find(this->m_camName);
     
+    //Guardo tanto E at up original como los transformados
+
     Vector3 pos = projCam->getPosition(); 
-    pos = modelView.transformPoint(pos);
+    Vector3 posTr = modelView.transformPoint(pos);
 
     Vector3 at = projCam->getAt();
-    at = modelView.transformPoint(at);
+    Vector3 atTr = modelView.transformPoint(at);
 
     Vector3 up = projCam->getUp(); 
-    //up = modelView.transformVector(up);
+    Vector3 upTr = modelView.transformVector(up);
 
+    //Calculo la matriz con E,at,Up transformados
+    projCam->lookAt(posTr,atTr,upTr);
+    //Guardo la matriz transformada
+    m_viewMatrix.clone(projCam->viewTrfm());
+
+    //Devuelvo la camara a como estaba
     projCam->lookAt(pos,at,up);
-    projCam->print();
+
 }

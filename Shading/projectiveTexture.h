@@ -19,4 +19,5 @@ class ProjectiveTexture{
         std::string m_texName;
         std::string m_camName;
         Trfm3D m_projectionMatrix;
+        Trfm3D m_viewMatrix;
 };
