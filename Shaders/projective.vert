@@ -25,5 +25,5 @@ void main() {
 	f_viewDirection = -f_position;
 	f_texCoord = v_texCoord;
 	f_ptexCoord = projectiveMatrix * vec4(f_position,1);
-	gl_Position = modelToClipMatrix * vec4(v_position, 1.0) * 0.5;
+	gl_Position = modelToClipMatrix * vec4(v_position, 1.0);
 }
