@@ -35,6 +35,8 @@ varying vec3 f_viewDirection;     // tangent space
 varying vec3 f_lightDirection[4]; // tangent space
 varying vec3 f_spotDirection[4];  // tangent space
 
+// Informacion utilizada -> https://fabiensanglard.net/bumpMapping/index.php
+
 void fillCTS(inout mat4 cameraToTangentSpaceMatrix){
 	//Pasar los vectores de la base del espacio tangente al sistema de la camara
 	
@@ -66,11 +68,5 @@ void main() {
 				f_spotDirection[i] = (cameraToTangentSpaceMatrix * vec4(theLights[i].spotDir,0)).xyz;
 			}
 		}
-		/*}else if(theLights[i].cosCutOff == 0.0){ //Posicional
-			f_lightDirection[i] = (cameraToTangentSpaceMatrix * vec4((theLights[i].position.xyz - v_position_c.xyz),0)).xyz;
-		}else{//Spotlight
-			f_lightDirection[i] = (cameraToTangentSpaceMatrix * vec4((theLights[i].position.xyz - v_position_c.xyz),0)).xyz;
-			f_spotDirection[i] = (cameraToTangentSpaceMatrix * vec4(theLights[i].spotDir,0)).xyz;
-		}*/
 	}
 }
